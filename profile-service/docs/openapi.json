@@ -1,0 +1,192 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Platypus Documentation 1.0",
+    "description": "Dokumentasi untuk service platypus.\nService platypus adalah service yang menangani domain order. Yang kami handle meliputi:\n- Manage order\n- Create order\n- Create invoice\n- etc\n\nResources:\n- [gatotkaca](http://google.com)\n- [same link](http://github.com)",
+    "contact": {
+      "email": "smaslul@binaracademy.org"
+    },
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Orders",
+      "description": "Handling order tabel"
+    }
+  ],
+  "paths": {
+    "/orders": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Get orders endpoint",
+        "description": "Get all orders based on filtering by params",
+        "operationId": "getOrders",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "filter orders by user_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success get orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/profile": {
+      "get": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "Get profile",
+        "description": "Get profile user",
+        "operationId": "getProfile",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetProfileDetailResponse"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Order": {
+        "required": [
+          "order_no"
+        ],
+        "type": "object",
+        "properties": {
+          "order_no": {
+            "type": "string",
+            "example": "ORD7715890"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Sabun Mandi"
+          },
+          "sku": {
+            "type": "string",
+            "example": "878huf787"
+          },
+          "qty": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "GeneralResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "responses": {
+      "GetProfileDetailResponse": {
+        "description": "get profile detail response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/GeneralResponse"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "user_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "example": "John"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "example": "Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "johndoe@email.com"
+                        },
+                        "orders": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Order"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "token": {
+        "type": "apiKey",
+        "name": "token",
+        "in": "header"
+      }
+    }
+  }
+}
